@@ -121,7 +121,7 @@ class Deflate {
    * Chunks of output data, if {@link Deflate.onData} not overridden.
    * @internal
    */
-  chunks: Uint8Array[];
+  chunks: Uint8Array<ArrayBuffer>[];
 
   private strm: ZStream;
 
@@ -130,7 +130,7 @@ class Deflate {
    * and {@link Deflate.onEnd} handlers. Filled after you push last chunk
    * (call {@link Deflate.push} with {@link Z_FINISH} / `true` param).
    */
-  result: Uint8Array;
+  result: Uint8Array<ArrayBuffer>;
 
   /**
    * Creates a new deflator instance with the specified params. Throws an
@@ -320,7 +320,7 @@ class Deflate {
    * By default, stores data blocks in the {@link Deflate.chunks} property and glues
    * them in {@link Deflate.onEnd}. Override this handler if you need another behaviour.
    */
-  onData(chunk: Uint8Array): void {
+  onData(chunk: Uint8Array<ArrayBuffer>): void {
     this.chunks.push(chunk);
   }
 
@@ -355,7 +355,7 @@ class Deflate {
  * console.log(deflate(data))
  * ```
  */
-function deflate(input: DeflateInput, options: DeflateOptions = {}): Uint8Array {
+function deflate(input: DeflateInput, options: DeflateOptions = {}): Uint8Array<ArrayBuffer> {
   const deflator = new Deflate(options);
 
   deflator.push(input, true);
@@ -371,7 +371,7 @@ function deflate(input: DeflateInput, options: DeflateOptions = {}): Uint8Array 
  * The same as {@link deflate}, but creates raw data without a wrapper
  * (header and adler32 crc).
  */
-function deflateRaw(input: DeflateInput, options: DeflateOptions = {}): Uint8Array {
+function deflateRaw(input: DeflateInput, options: DeflateOptions = {}): Uint8Array<ArrayBuffer> {
   return deflate(input, Object.assign({}, options, { raw: true }));
 }
 
@@ -380,7 +380,7 @@ function deflateRaw(input: DeflateInput, options: DeflateOptions = {}): Uint8Arr
  * The same as {@link deflate}, but creates a gzip wrapper instead of
  * a deflate one.
  */
-function gzip(input: DeflateInput, options: DeflateOptions = {}): Uint8Array {
+function gzip(input: DeflateInput, options: DeflateOptions = {}): Uint8Array<ArrayBuffer> {
   return deflate(input, Object.assign({}, options, { gzip: true }));
 }
 

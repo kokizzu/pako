@@ -88,7 +88,7 @@ class Inflate {
    * Chunks of output data, if {@link Inflate.onData} not overridden.
    * @internal
    */
-  chunks: Uint8Array[];
+  chunks: Uint8Array<ArrayBuffer>[];
 
   private strm: ZStream;
 
@@ -97,7 +97,7 @@ class Inflate {
    * and {@link Inflate.onEnd} handlers. Filled after you push last chunk
    * (call {@link Inflate.push} with {@link Z_FINISH} / `true` param).
    */
-  result: Uint8Array;
+  result: Uint8Array<ArrayBuffer>;
 
   /**
    * Creates a new inflator instance with the specified params. Throws an
@@ -384,7 +384,7 @@ class Inflate {
    *
    * @param chunk output data.
    */
-  onData(chunk: Uint8Array): void {
+  onData(chunk: Uint8Array<ArrayBuffer>): void {
     this.chunks.push(chunk);
   }
 
@@ -429,7 +429,7 @@ class Inflate {
 function inflate<O extends InflateOptions & { toText?: boolean }>(
   input: InflateInput,
   options: O = {} as O
-): O extends { toText: true } ? string : Uint8Array {
+): O extends { toText: true } ? string : Uint8Array<ArrayBuffer> {
   const inflator = new Inflate(options);
 
   inflator.push(input, true);
@@ -440,7 +440,7 @@ function inflate<O extends InflateOptions & { toText?: boolean }>(
   const result = inflator.result;
 
   return (options.toText ? new TextDecoder().decode(result) : result) as
-    O extends { toText: true } ? string : Uint8Array;
+    O extends { toText: true } ? string : Uint8Array<ArrayBuffer>;
 }
 
 
@@ -451,7 +451,7 @@ function inflate<O extends InflateOptions & { toText?: boolean }>(
 function inflateRaw<O extends InflateOptions & { toText?: boolean }>(
   input: InflateInput,
   options: O = {} as O
-): O extends { toText: true } ? string : Uint8Array {
+): O extends { toText: true } ? string : Uint8Array<ArrayBuffer> {
   return inflate<O>(input, { ...options, raw: true } as O);
 }
 

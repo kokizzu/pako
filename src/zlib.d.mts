@@ -25,7 +25,7 @@ declare class ZStream {
   next_in: number;
   avail_in: number;
   total_in: number;
-  output: Uint8Array;
+  output: Uint8Array<ArrayBuffer>;
   next_out: number;
   avail_out: number;
   total_out: number;
